@@ -1,0 +1,16 @@
+# Emperor uWSGI upstart
+
+description "uWSGI Emperor"
+start on runlevel [2345]
+stop on runlevel [06]
+
+# respawn up to 3 times within 5 second period before marking as failed.
+respawn limit 3 5
+
+# can be used for the entire process instead of switching down with uid/gid in the uwsgi conf:
+# setuid
+# setgid
+
+#pidfile /var/run/{{uwsgi_upstart_name}}
+
+exec {{ uwsgi_executable | default('/usr/local/bin/uwsgi') }} --ini "{{ uwsgi_config_dir }}/emperor.ini"

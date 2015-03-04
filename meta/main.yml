@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: "Tristan Fisher and David Panofsky"
+  description: "Ansible role for configuring uWSGI -- especially helpful for Emperor mode"
+  license: BSD 3-Clause
+  min_ansible_version: 1.8
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  categories:
+    - development
+dependencies: []

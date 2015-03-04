@@ -1,0 +1,27 @@
+; https://uwsgi-docs.readthedocs.org/en/latest/Glossary.html?highlight=master
+; Master mode: uWSGI’s built-in prefork+threading multi-worker management mode...For all practical serving
+; deployments it’s not really a good idea not to use master mode (sidenote, use '--die-on-term' if you enable master).
+
+; Documentation to note when editing this file:
+; http://uwsgi-docs.readthedocs.org/en/latest/Emperor.html#passing-configuration-parameters-to-all-vassals
+; http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#magicvars
+; http://uwsgi-docs.readthedocs.org/en/latest/Options.html <-- all options.  There are many.
+
+[uwsgi]
+emperor = {{ emperor_vassal_match | default('%d/vassals/*.ini') }}
+pidfile = {{ emperor_pid_file | default('/run/uwsgi-emperor.pid') }}
+logto = {{ emperor_log | default('/var/log/uwsgi.log') }}
+log-reopen   =  true
+touch-logreopen = true
+touch-reload =  %p
+chdir        =  %d
+max-fd       =  8192
+;chdir        =  %d
+;max-fd     = 8192
+uid = root
+gid = root
+
+stats = {{ emperor_stats_listener | default('127.0.0.1:9191') }}
+
+# runtime dir for unix sockets if needed
+# exec-as-root = install -d /run/uwsgi -g www-data -m770

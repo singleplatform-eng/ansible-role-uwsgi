@@ -1,0 +1,54 @@
+; see this, especially if you need a privileged port
+;http://uwsgi-docs.readthedocs.org/en/latest/WSGIquickstart.html#security-and-availability
+[uwsgi]
+;plugins-dir
+;plugin = {{ vassal_plugin | default('python') }}
+
+socket = {{ vassal_socket | default('/tmp/%n.sock') }}
+{% if vassal_chmod_socket is defined %}
+chmod-socket = {{ vassal_chmod_socket }}
+{% endif %}
+
+protocol = {{ vassal_protocol | default('uwsgi') }}
+module = {{ vassal_module | default('wsgihandler') }}
+app = {{ vassal_app | default('%(module)') }}
+{#
+If your callable has the same name as your module, no need to set it.
+Otherwise, set vassal_callable to the application instance (e.g. 'app' for Flask, 'application' for tornado
+#}
+callable = {{ vassal_callable | default('%(module)') }}
+
+
+{# this should go to the root of the project (e.g. /srv/x/ where /srv/x/run.py exists) #}
+{% if vassal_chdir is defined %}
+chdir = {{ vassal_chdir }}
+{% endif %}
+
+{# point to the base of the virtualenv dir #}
+home = {{ vassal_virtualenv | default('env') }}
+
+vacuum = {{ vassal_vacuum | default('true')}}     # clear environment on exit
+pidfile = /tmp/%n.pid
+uid = {{ vassal_user }}
+gid = {{ vassal_group | default( vassal_user ) }}
+
+{% if vassal_master_mode is defined %}
+master = true
+{% endif %}
+processes = {{ vassal_processes }}
+threads = {{ vassal_threads }}
+{% if vassal_offload_threads is defined %}
+offload-threads = {{vassal_offload_threads}}
+{% endif %}
+
+{% if vassal_stats_address is defined %}
+stats = {{ vassal_stats_address }}
+{% endif %}
+
+{% if vassal_env is defined %}
+# Environment vars:
+{% for key, value in vassal_env.items() %}
+env = {{key}}={{value | default('None') }}
+{% endfor %}
+{% endif %}
+
